@@ -1,4 +1,4 @@
-[![Build](https://github.com/devtiro/spring-boot-kafka-tutorial/actions/workflows/github-actions-build.yml/badge.svg)](https://github.com/devtiro/spring-boot-kafka-tutorial/actions/workflows/github-actions-build.yml)
+[![Build](https://github.com/Orisakwe-Nwokocha/kafka-tutorial/actions/workflows/build.yml/badge.svg)](https://github.com/Orisakwe-Nwokocha/kafka-tutorial/actions/workflows/build)
 
 # Orisha Spring Boot Kafka Tutorial
 
