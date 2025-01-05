@@ -2,6 +2,7 @@ package dev.orisha.kafka_tutorial.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.TaskScheduler;
@@ -15,13 +16,14 @@ public class SchedulerConfig {
 
     private final SchedulerProperties schedulerProperties;
 
+    @Autowired
     public SchedulerConfig(SchedulerProperties schedulerProperties) {
         this.schedulerProperties = schedulerProperties;
     }
 
     @Bean(name = "kafkaProducerScheduler")
     public ThreadPoolTaskScheduler kafkaProducerScheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        final ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(schedulerProperties.getPoolSize());
         scheduler.setThreadNamePrefix(schedulerProperties.getThreadNamePrefix());
         scheduler.setDaemon(schedulerProperties.isDaemon());

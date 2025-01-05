@@ -3,3 +3,15 @@ scheduler:
   poolSize: 10
   awaitTerminationSeconds: 10
   daemon: true
+
+#spring:
+#  cloud:
+#    config:
+#      uri: http://localhost:8773
+#      uri: https://github.com/Orisakwe-Nwokocha/Central-Config/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

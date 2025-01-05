@@ -2,9 +2,10 @@ package dev.orisha.kafka_tutorial.kafka;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.orisha.kafka_tutorial.config.KafkaConfig;
+import dev.orisha.kafka_tutorial.config.KafkaProperties;
 import dev.orisha.kafka_tutorial.domain.CustomerVisitEvent;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,15 +18,16 @@ import static java.time.LocalDateTime.now;
 @Slf4j
 public class KafkaProducer {
 
-    private final KafkaConfig kafkaConfig;
+    private final KafkaProperties kafkaProperties;
     private final ObjectMapper objectMapper;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private int counter;
 
-    public KafkaProducer(KafkaConfig kafkaConfig,
+    @Autowired
+    public KafkaProducer(KafkaProperties kafkaProperties,
                          ObjectMapper objectMapper,
                          KafkaTemplate<String, String> kafkaTemplate) {
-        this.kafkaConfig = kafkaConfig;
+        this.kafkaProperties = kafkaProperties;
         this.objectMapper = objectMapper;
         this.kafkaTemplate = kafkaTemplate;
         this.counter = 1;
@@ -40,11 +42,13 @@ public class KafkaProducer {
         try {
             final String payload = objectMapper.writeValueAsString(event);
             log.info("Sending customer visit event: {} with payload: {}", counter, payload);
-            kafkaTemplate.send(kafkaConfig.getTopic(), (payload + counter));
+            kafkaTemplate.send(kafkaProperties.getTopic(), (payload + counter));
             ++counter;
         } catch (JsonProcessingException e) {
-            log.info("Could not serialize event: {}", e.getMessage());
+            log.error("Could not serialize event: {}", e.getMessage());
             throw new RuntimeException(e);
+        } catch (Exception exception) {
+            log.error("Error while sending customer visit event: {}", exception.getMessage());
         }
     }
 

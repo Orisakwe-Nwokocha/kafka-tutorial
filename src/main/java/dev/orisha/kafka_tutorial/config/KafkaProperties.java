@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "orisha.kafka")
 @Getter
 @Setter
-public class KafkaConfig {
+public class KafkaProperties {
 
     private String topic;
 
