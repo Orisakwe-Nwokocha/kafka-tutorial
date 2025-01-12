@@ -1,59 +1,50 @@
 package dev.orisha.kafka_tutorial.controllers;
 
-import dev.orisha.kafka_tutorial.config.SchedulerProperties;
-import dev.orisha.kafka_tutorial.dto.ConfigClientResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Map;
-import java.util.TreeMap;
-
 @RestController
-@RefreshScope
+//@RefreshScope
 @Slf4j
 public class ConfigClientController {
 
+    //    @Value("${message}")
+//    private String message;
+
+    private final RestTemplate restTemplate;
+//    private final SchedulerProperties schedulerProperties;
+
     @Autowired
-    public ConfigClientController(RestTemplate restTemplate, SchedulerProperties schedulerProperties) {
+    public ConfigClientController(final RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.schedulerProperties = schedulerProperties;
+//        this.schedulerProperties = schedulerProperties;
     }
 
-
-    @GetMapping("/message")
-    public ConfigClientResponse getMessage() {
-        Map<String, Object> map = new TreeMap<>();
-        map.put("poolSize", schedulerProperties.getPoolSize());
-        map.put("threadNamePrefix", schedulerProperties.getThreadNamePrefix());
-        map.put("awaitTerminationSeconds", schedulerProperties.getAwaitTerminationSeconds());
-        map.put("daemon", schedulerProperties.isDaemon());
-        String response = String.format("%n%s: %s%n%s: %s", "message", message, "data", map);
-        log.info("API response: {}", response);
-        return new ConfigClientResponse(message, map);
-    }
-
-    @PutMapping("/refresh")
+    @PostMapping("/refresh")
     public String refresh() {
-        log.info("REQUEST to refresh application configurations");
-        String url = "http://localhost:{port}/actuator/refresh";
+        log.info("REST request to refresh application configurations");
         try {
-            HttpEntity<String> entity = getDefaultHttpEntity();
-            restTemplate.postForObject(url, entity, Void.class, port);
-            log.info("Actuator refresh endpoint called successfully");
-            return "Application configurations refreshed successfully";
+            refreshConfigProps();
+            return "Actuator refresh endpoint called successfully";
         } catch (Exception exception) {
             log.error("Error refreshing application configurations: {}", exception.getMessage());
             return "Error refreshing application configurations";
         }
+    }
+
+    @Scheduled(cron = "0 0 */6 * * *")
+    private void refreshConfigProps() {
+        HttpEntity<String> entity = getDefaultHttpEntity();
+        String url = "http://localhost:8084/actuator/refresh";
+        restTemplate.postForObject(url, entity, Void.class);
+        log.info("Application configurations refreshed successfully");
     }
 
     private static HttpEntity<String> getDefaultHttpEntity() {
@@ -62,13 +53,15 @@ public class ConfigClientController {
         return new HttpEntity<>(headers);
     }
 
-    @Value("${message}")
-    private String message;
-
-    @Value("${server.port}")
-    private String port;
-
-    private final RestTemplate restTemplate;
-    private final SchedulerProperties schedulerProperties;
-
+    //    @GetMapping("/message")
+//    public ConfigClientResponse getMessage() {
+//        Map<String, Object> map = new TreeMap<>();
+//        map.put("poolSize", schedulerProperties.getPoolSize());
+//        map.put("threadNamePrefix", schedulerProperties.getThreadNamePrefix());
+//        map.put("awaitTerminationSeconds", schedulerProperties.getAwaitTerminationSeconds());
+//        map.put("daemon", schedulerProperties.isDaemon());
+//        String response = String.format("%n%s: %s%n%s: %s", "message", message, "data", map);
+//        log.info("API response: {}", response);
+//        return new ConfigClientResponse(message, map);
+//    }
 }

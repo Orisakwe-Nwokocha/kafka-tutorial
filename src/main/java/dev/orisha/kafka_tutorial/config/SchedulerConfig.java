@@ -1,6 +1,5 @@
 package dev.orisha.kafka_tutorial.config;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -37,14 +36,13 @@ public class SchedulerConfig {
         return kafkaProducerScheduler();
     }
 
-
-    @PostConstruct
-    public void initialize() {
-        log.info("Scheduler bean initialized with the following settings:");
-        log.info("Pool Size: {}", schedulerProperties.getPoolSize());
-        log.info("Thread Name Prefix: {}", schedulerProperties.getThreadNamePrefix());
-        log.info("Daemon: {}", schedulerProperties.isDaemon());
-        log.info("Await Termination Seconds: {}", schedulerProperties.getAwaitTerminationSeconds());
-    }
+//    @PostConstruct
+//    public void initialize() {
+//        log.info("Scheduler bean initialized with the following settings:");
+//        log.info("Pool Size: {}", schedulerProperties.getPoolSize());
+//        log.info("Thread Name Prefix: {}", schedulerProperties.getThreadNamePrefix());
+//        log.info("Daemon: {}", schedulerProperties.isDaemon());
+//        log.info("Await Termination Seconds: {}", schedulerProperties.getAwaitTerminationSeconds());
+//    }
 
 }
