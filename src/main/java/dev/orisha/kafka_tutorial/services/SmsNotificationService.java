@@ -3,7 +3,7 @@ package dev.orisha.kafka_tutorial.services;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import static dev.orisha.kafka_tutorial.services.utils.constants.ServiceConstants.NOTIFICATION_SUCCESS_MESSAGE;
+import static dev.orisha.kafka_tutorial.utils.constants.ServiceConstants.NOTIFICATION_SUCCESS_MESSAGE;
 
 @Service
 @Slf4j
@@ -15,4 +15,5 @@ public class SmsNotificationService implements NotificationService {
         String serviceName = this.getClass().getSimpleName();
         return NOTIFICATION_SUCCESS_MESSAGE.formatted(serviceName);
     }
+
 }

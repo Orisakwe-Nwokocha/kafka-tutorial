@@ -21,7 +21,7 @@ public class NotificationServiceFactory {
         this.defaultNotificationService = defaultNotificationService;
     }
 
-    public NotificationService getNotificationService(String notificationType) {
+    public NotificationService getNotificationService(final String notificationType) {
         String beanName = BeanNameUtil.getNotificationServiceBeanName(notificationType);
         log.info("NotificationService factory trying to load notification service bean '{}'", beanName);
         if (this.applicationContext != null && this.applicationContext.containsBean(beanName)) {

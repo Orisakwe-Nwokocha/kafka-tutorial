@@ -1,4 +1,4 @@
-package dev.orisha.kafka_tutorial.services.utils.constants;
+package dev.orisha.kafka_tutorial.utils.constants;
 
 public final class ServiceConstants {
 
