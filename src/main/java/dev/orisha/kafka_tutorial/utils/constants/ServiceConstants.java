@@ -6,4 +6,6 @@ public final class ServiceConstants {
 
     public static final String NOTIFICATION_SUCCESS_MESSAGE = "message successfully sent using <%s>";
 
+    public static final String NOTIFICATION_SERVICE = "NotificationService";
+
 }

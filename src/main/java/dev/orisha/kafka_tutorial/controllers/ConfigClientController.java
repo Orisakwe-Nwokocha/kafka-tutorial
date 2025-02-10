@@ -5,7 +5,6 @@ import dev.orisha.kafka_tutorial.dto.ConfigClientResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,10 +18,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @RestController
-@RefreshScope
 @Slf4j
 public class ConfigClientController {
 
+    /**
+     * The biggest difference of variables created with the Annotation @Value
+     * is that the value will be fixed as it will be assigned to run the
+     * application and never refreshed. This is the only injection
+     * method that is never refreshed.
+     * <p> It effectively means there is no need for @RefreshScope.
+     */
     @Value("${message}")
     private String message;
 
@@ -37,7 +42,7 @@ public class ConfigClientController {
     }
 
     @GetMapping("/message")
-    public ConfigClientResponse getMessage() {
+    public ConfigClientResponse getMessage(@Value("${message}") String message) {
         Map<String, Object> map = new TreeMap<>();
         map.put("poolSize", schedulerProperties.getPoolSize());
         map.put("threadNamePrefix", schedulerProperties.getThreadNamePrefix());
@@ -45,7 +50,9 @@ public class ConfigClientController {
         map.put("daemon", schedulerProperties.isDaemon());
         String response = String.format("%n%s: %s%n%s: %s", "message", message, "data", map);
         log.info("API response: {}", response);
-        return new ConfigClientResponse(message, map);
+        ConfigClientResponse configClientResponse = new ConfigClientResponse(message, map);
+        log.info("API response: {}", configClientResponse);
+        return configClientResponse;
     }
 
     @PostMapping("/refresh")

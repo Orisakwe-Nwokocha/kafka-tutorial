@@ -3,6 +3,7 @@ package dev.orisha.kafka_tutorial.factory;
 import dev.orisha.kafka_tutorial.services.NotificationService;
 import dev.orisha.kafka_tutorial.utils.BeanNameUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -23,12 +24,16 @@ public class NotificationServiceFactory {
 
     public NotificationService getNotificationService(final String notificationType) {
         String beanName = BeanNameUtil.getNotificationServiceBeanName(notificationType);
-        log.info("NotificationService factory trying to load notification service bean '{}'", beanName);
-        if (this.applicationContext != null && this.applicationContext.containsBean(beanName)) {
-            log.info("{} bean found and fully loaded", beanName);
-            return this.applicationContext.getBean(beanName, NotificationService.class);
+        log.info("Attempting to load NotificationService bean '{}'", beanName);
+
+        try {
+            NotificationService service = this.applicationContext.getBean(beanName, NotificationService.class);
+            log.info("Successfully loaded NotificationService bean '{}'", beanName);
+            return service;
+        } catch (BeansException exception) {
+            log.warn("No bean found for '{}'. Using default NotificationService.", beanName, exception);
         }
-        log.warn("Invalid notification type '{}'. Falling back to default implementation", notificationType);
+
         return this.defaultNotificationService;
     }
 

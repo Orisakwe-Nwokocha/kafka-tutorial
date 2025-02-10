@@ -8,6 +8,7 @@ scheduler:
 #  cloud:
 #    config:
 #      uri: http://localhost:8773
+#      fail-fast: false
 #      uri: https://github.com/Orisakwe-Nwokocha/Central-Config/
 
 management:
